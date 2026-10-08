@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Bookings · CampusRoom{% endblock %}
+{% block content %}
+<h1>{% if is_admin %}All bookings{% else %}Your bookings{% endif %}</h1>
+
+<table>
+  <thead>
+    <tr><th>ID</th><th>Room</th><th>When</th><th>Who</th><th>Purpose</th><th>Status</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for booking in bookings %}
+    <tr>
+      <td>{{ booking.booking_id }}</td>
+      <td>{{ booking.room.room_number }}</td>
+      <td>{{ booking.schedule }}</td>
+      <td>{{ booking.user.name }}</td>
+      <td>{{ booking.purpose }}</td>
+      <td>{% if booking.active %}active{% else %}cancelled{% endif %}</td>
+      <td>
+        {% if booking.active %}
+        <form method="post" action="{{ url_for('cancel', booking_id=booking.booking_id) }}">
+          <button type="submit" class="danger">Cancel</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">No bookings yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

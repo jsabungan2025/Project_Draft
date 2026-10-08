@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Rooms · CampusRoom{% endblock %}
+{% block content %}
+<h1>Campus rooms</h1>
+<p class="lead">Filter rooms, then book a free time. Conflict checking still runs in Python before anything is saved to SQLite.</p>
+
+<form class="filters" method="get">
+  <label>Building <input name="building" value="{{ request.args.get('building', '') }}" placeholder="Science"></label>
+  <label>Type <input name="room_type" value="{{ request.args.get('room_type', '') }}" placeholder="laboratory"></label>
+  <label>Min capacity <input name="min_capacity" type="number" min="1" value="{{ request.args.get('min_capacity', '') }}"></label>
+  <button type="submit">Search</button>
+</form>
+
+<table>
+  <thead>
+    <tr><th>Room</th><th>Building</th><th>Type</th><th>Capacity</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for room in rooms %}
+    <tr>
+      <td>{{ room.room_number }}</td>
+      <td>{{ room.building }}</td>
+      <td>{{ room.room_type }}</td>
+      <td>{{ room.capacity }}</td>
+      <td><a class="btn" href="{{ url_for('book', room=room.room_number) }}">Book</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No rooms match those filters.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if is_admin %}
+<section class="panel">
+  <h2>Add a room</h2>
+  <form method="post" action="{{ url_for('add_room') }}" class="stack">
+    <label>Room number <input name="room_number" required></label>
+    <label>Building <input name="building" required></label>
+    <label>Capacity <input name="capacity" type="number" min="1" required></label>
+    <label>Type <input name="room_type" placeholder="classroom" required></label>
+    <button type="submit">Save room</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

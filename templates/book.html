@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Availability · CampusRoom{% endblock %}
+{% block content %}
+<h1>Rooms free at a time</h1>
+
+<form method="post" class="filters">
+  <label>Date <input type="date" name="date" required></label>
+  <label>Start hour <input type="number" name="start_hour" min="0" max="23" value="9" required></label>
+  <label>End hour <input type="number" name="end_hour" min="1" max="23" value="11" required></label>
+  <button type="submit">Check</button>
+</form>
+
+{% if schedule %}
+<h2>Free for {{ schedule }}</h2>
+<ul class="cards">
+  {% for room in free_rooms %}
+    <li>
+      <strong>{{ room.room_number }}</strong>
+      <span>{{ room.building }} · {{ room.room_type }} · {{ room.capacity }} seats</span>
+      <a class="btn" href="{{ url_for('book', room=room.room_number) }}">Book</a>
+    </li>
+  {% else %}
+    <li>No rooms are free for that slot.</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
